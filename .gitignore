@@ -45,3 +45,10 @@ context/
 # AI Context
 .cursor/
 context/
+
+# Stuff
+data/
+stores/
+router/
+utils/
+views/
