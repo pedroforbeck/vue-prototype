@@ -1,18 +1,25 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useDraggable } from '@vueuse/core';
 
 const playerRef = ref(null);
 const dragHandleRef = ref(null);
 
-const { x, y, style } = useDraggable(playerRef, {
+const { x, y } = useDraggable(playerRef, {
   initialValue: { x: window.innerWidth / 2 - 137, y: window.innerHeight / 2 - 58 },
   handle: dragHandleRef
 });
+
+// Usando transform (GPU-accelerated) no lugar de left/top para acabar com a lentidão
+const playerStyle = computed(() => ({
+  transform: `translate(${x.value}px, ${y.value}px)`,
+  left: '0px',
+  top: '0px'
+}));
 </script>
 
 <template>
-  <div class="winamp-window" ref="playerRef" :style="style">
+  <div class="winamp-window" ref="playerRef" :style="playerStyle">
     <!-- Title Bar -->
     <div class="title-bar" ref="dragHandleRef">
       <div class="title-text">WINWEB</div>
