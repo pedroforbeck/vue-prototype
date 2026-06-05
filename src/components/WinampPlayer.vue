@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import { useDraggable } from '@vueuse/core';
 import { usePlayerStore } from '../stores/playerStore';
+import YouTubePlayer from './YouTubePlayer.vue';
 
 const playerStore = usePlayerStore();
 
@@ -22,15 +23,20 @@ const playerStyle = computed(() => ({
 </script>
 
 <template>
-  <div class="winamp-window" ref="playerRef" :style="playerStyle">
-    <!-- Title Bar -->
-    <div class="title-bar" ref="dragHandleRef">
-      <div class="title-text">WINWEB</div>
-      <div class="window-controls">
-        <button class="btn-min"></button>
-        <button class="btn-close"></button>
+  <div class="draggable-wrapper" ref="playerRef" :style="playerStyle">
+    <!-- YouTube Player em cima -->
+    <YouTubePlayer />
+
+    <!-- Winamp Main Interface em baixo -->
+    <div class="winamp-window">
+      <!-- Title Bar -->
+      <div class="title-bar" ref="dragHandleRef">
+        <div class="title-text">WINWEB</div>
+        <div class="window-controls">
+          <button class="btn-min"></button>
+          <button class="btn-close"></button>
+        </div>
       </div>
-    </div>
     
     <!-- URL Input -->
     <div class="url-input-container">
@@ -55,12 +61,19 @@ const playerStyle = computed(() => ({
       <button class="btn stop" @click="playerStore.pause()">[]</button>
       <button class="btn next">&gt;|</button>
     </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.winamp-window {
+.draggable-wrapper {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* Grudados um no outro */
+}
+
+.winamp-window {
   width: 275px;
   height: 116px;
   background-color: var(--winamp-bg);

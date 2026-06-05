@@ -23,12 +23,12 @@ onMounted(() => {
 
 function initPlayer() {
   player = new window.YT.Player(ytContainer.value, {
-    height: '180',
-    width: '320',
+    height: '155',  // Proporção ~16:9 ajustada para a largura do Winamp
+    width: '275',   // Mesma largura do Winamp (275px)
     videoId: playerStore.videoId,
     playerVars: {
       autoplay: 0,
-      controls: 1, // Vamos deixar os controles visíveis por enquanto para testes
+      controls: 1, 
       disablekb: 0,
       fs: 0,
       modestbranding: 1
@@ -76,20 +76,19 @@ watch(() => playerStore.videoId, (newId) => {
 
 <template>
   <div class="youtube-visible-container">
-    <div class="window-title">YouTube Player</div>
+    <div class="window-title">Vídeo YouTube</div>
     <div ref="ytContainer"></div>
   </div>
 </template>
 
 <style scoped>
 .youtube-visible-container {
-  position: absolute;
-  top: 20px;
-  right: 20px;
   background: #1e1e24;
   border: 1px solid #52525d;
   box-shadow: 2px 2px 0 #000, inset 1px 1px 0 rgba(255, 255, 255, 0.2);
-  padding: 5px;
+  padding: 2px;
+  width: 275px;
+  box-sizing: border-box;
 }
 
 .window-title {
@@ -98,7 +97,7 @@ watch(() => playerStore.videoId, (newId) => {
   color: white;
   font-weight: bold;
   background: linear-gradient(to right, #000080, #1084d0);
-  margin-bottom: 5px;
+  margin-bottom: 2px;
   padding: 2px;
 }
 </style>
