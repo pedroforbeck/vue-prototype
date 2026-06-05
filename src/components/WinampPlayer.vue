@@ -1,6 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useDraggable } from '@vueuse/core';
+import { usePlayerStore } from '../stores/playerStore';
+
+const playerStore = usePlayerStore();
 
 const playerRef = ref(null);
 const dragHandleRef = ref(null);
@@ -29,6 +32,15 @@ const playerStyle = computed(() => ({
       </div>
     </div>
     
+    <!-- URL Input -->
+    <div class="url-input-container">
+      <input 
+        type="text" 
+        placeholder="Cole o link do YouTube aqui..." 
+        @change="e => playerStore.loadYoutubeUrl(e.target.value)"
+      />
+    </div>
+
     <!-- Main Display Area -->
     <div class="main-display">
       <div class="time-display">00:00</div>
@@ -38,9 +50,9 @@ const playerStyle = computed(() => ({
     <!-- Controls Area -->
     <div class="controls">
       <button class="btn prev">|&lt;</button>
-      <button class="btn play">&gt;</button>
-      <button class="btn pause">||</button>
-      <button class="btn stop">[]</button>
+      <button class="btn play" @click="playerStore.play()">&gt;</button>
+      <button class="btn pause" @click="playerStore.pause()">||</button>
+      <button class="btn stop" @click="playerStore.pause()">[]</button>
       <button class="btn next">&gt;|</button>
     </div>
   </div>
@@ -142,5 +154,24 @@ const playerStyle = computed(() => ({
 
 .btn:active {
   border-style: inset;
+}
+
+.url-input-container {
+  padding: 2px 5px;
+}
+
+.url-input-container input {
+  width: 100%;
+  background: #000;
+  border: 1px inset #555;
+  color: #0f0;
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  padding: 2px;
+  outline: none;
+}
+
+.url-input-container input::placeholder {
+  color: #050;
 }
 </style>
