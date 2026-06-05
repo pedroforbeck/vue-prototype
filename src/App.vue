@@ -1,7 +1,11 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import WinampPlayer from './components/WinampPlayer.vue';
 </script>
 
 <template>
-  <HelloWorld />
+  <WinampPlayer />
 </template>
+
+<style scoped>
+/* App specific styles can go here */
+</style>
