@@ -10,7 +10,10 @@ const playerRef = ref(null);
 const dragHandleRef = ref(null);
 
 const { x, y } = useDraggable(playerRef, {
-  initialValue: { x: window.innerWidth / 2 - 137, y: window.innerHeight / 2 - 58 },
+  initialValue: { 
+    x: Math.max(0, (window.innerWidth - 275) / 2), 
+    y: Math.max(20, (window.innerHeight - 271) / 2) // 155 (YT) + 116 (Winamp) = 271px
+  },
   handle: dragHandleRef
 });
 
@@ -96,6 +99,7 @@ const playerStyle = computed(() => ({
   align-items: center;
   padding: 0 2px;
   cursor: grab;
+  touch-action: none; /* Previne scroll da página ao arrastar no celular */
 }
 
 .title-bar:active {
