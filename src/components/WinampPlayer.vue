@@ -1,12 +1,19 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useDraggable } from '@vueuse/core';
+import { usePlayerStore } from '../stores/playerStore';
+import YouTubePlayer from './YouTubePlayer.vue';
+
+const playerStore = usePlayerStore();
 
 const playerRef = ref(null);
 const dragHandleRef = ref(null);
 
 const { x, y } = useDraggable(playerRef, {
-  initialValue: { x: window.innerWidth / 2 - 137, y: window.innerHeight / 2 - 58 },
+  initialValue: { 
+    x: Math.max(0, (window.innerWidth - 275) / 2), 
+    y: Math.max(20, (window.innerHeight - 271) / 2) // 155 (YT) + 116 (Winamp) = 271px
+  },
   handle: dragHandleRef
 });
 
@@ -19,16 +26,30 @@ const playerStyle = computed(() => ({
 </script>
 
 <template>
-  <div class="winamp-window" ref="playerRef" :style="playerStyle">
-    <!-- Title Bar -->
-    <div class="title-bar" ref="dragHandleRef">
-      <div class="title-text">WINWEB</div>
-      <div class="window-controls">
-        <button class="btn-min"></button>
-        <button class="btn-close"></button>
+  <div class="draggable-wrapper" ref="playerRef" :style="playerStyle">
+    <!-- YouTube Player em cima -->
+    <YouTubePlayer />
+
+    <!-- Winamp Main Interface em baixo -->
+    <div class="winamp-window">
+      <!-- Title Bar -->
+      <div class="title-bar" ref="dragHandleRef">
+        <div class="title-text">WINWEB</div>
+        <div class="window-controls">
+          <button class="btn-min"></button>
+          <button class="btn-close"></button>
+        </div>
       </div>
-    </div>
     
+    <!-- URL Input -->
+    <div class="url-input-container">
+      <input 
+        type="text" 
+        placeholder="Cole o link do YouTube aqui..." 
+        @change="e => playerStore.loadYoutubeUrl(e.target.value)"
+      />
+    </div>
+
     <!-- Main Display Area -->
     <div class="main-display">
       <div class="time-display">00:00</div>
@@ -38,17 +59,24 @@ const playerStyle = computed(() => ({
     <!-- Controls Area -->
     <div class="controls">
       <button class="btn prev">|&lt;</button>
-      <button class="btn play">&gt;</button>
-      <button class="btn pause">||</button>
-      <button class="btn stop">[]</button>
+      <button class="btn play" @click="playerStore.play()">&gt;</button>
+      <button class="btn pause" @click="playerStore.pause()">||</button>
+      <button class="btn stop" @click="playerStore.pause()">[]</button>
       <button class="btn next">&gt;|</button>
+    </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.winamp-window {
+.draggable-wrapper {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* Grudados um no outro */
+}
+
+.winamp-window {
   width: 275px;
   height: 116px;
   background-color: var(--winamp-bg);
@@ -71,6 +99,7 @@ const playerStyle = computed(() => ({
   align-items: center;
   padding: 0 2px;
   cursor: grab;
+  touch-action: none; /* Previne scroll da página ao arrastar no celular */
 }
 
 .title-bar:active {
@@ -142,5 +171,24 @@ const playerStyle = computed(() => ({
 
 .btn:active {
   border-style: inset;
+}
+
+.url-input-container {
+  padding: 2px 5px;
+}
+
+.url-input-container input {
+  width: 100%;
+  background: #000;
+  border: 1px inset #555;
+  color: #0f0;
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  padding: 2px;
+  outline: none;
+}
+
+.url-input-container input::placeholder {
+  color: #050;
 }
 </style>
