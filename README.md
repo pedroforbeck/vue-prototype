@@ -42,7 +42,7 @@
 
 ---
 
-## ★彡 Bem-vindo ao VueNamp (WinWeb) 彡★
+##  Bem-vindo ao VueNamp
 
 <img align="right" src="https://web.archive.org/web/20091013234702im_/http://geocities.com/punkrockgrunge/new_anim.gif" title="NEW!" />
 
@@ -74,7 +74,7 @@ O **VueNamp** e uma verdadeira viagem no tempo direto para o seu navegador! Cons
 
 ---
 
-## ★ Download e Instalacao (Sem discador!) ★
+##  Download e Instalacao (Sem discador!) 
 
 <div align="center">
 <img src="https://web.archive.org/web/20091027131714im_/http://www.geocities.com/SiliconValley/Pines/4346/undconst.gif" title="Under Construction!" />
