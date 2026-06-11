@@ -5,7 +5,7 @@ export const useDesktopStore = defineStore('desktop', () => {
   const windows = ref([
     {
       id: 'winamp',
-      title: 'WinWeb',
+      title: 'VueNamp',
       icon: '/winamp-logo.png',
       isOpen: false,
       isMinimized: false,
@@ -30,7 +30,7 @@ export const useDesktopStore = defineStore('desktop', () => {
     {
       id: 'milkdrop',
       title: 'Milkdrop',
-      icon: 'https://win98icons.alexmeub.com/icons/png/video_x_generic-0.png',
+      icon: '/winamp-logo.png',
       isOpen: false,
       isMinimized: false,
       zIndex: 10

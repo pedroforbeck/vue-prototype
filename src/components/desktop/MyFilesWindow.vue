@@ -12,8 +12,8 @@ import DraggableWindow from './DraggableWindow.vue';
   >
     <div class="file-explorer">
       <div class="toolbar">
-        <button><img src="https://win98icons.alexmeub.com/icons/png/back-0.png" width="16" /> Voltar</button>
-        <button><img src="https://win98icons.alexmeub.com/icons/png/forward-0.png" width="16" /> Avançar</button>
+        <button><span style="font-weight: bold; margin-right: 4px;">←</span> Voltar</button>
+        <button><span style="font-weight: bold; margin-right: 4px;">→</span> Avançar</button>
         <button><img src="https://win98icons.alexmeub.com/icons/png/search_file-2.png" width="16" /> Pesquisar</button>
       </div>
       <div class="address-bar">
@@ -30,7 +30,7 @@ import DraggableWindow from './DraggableWindow.vue';
           <span>Skins do Winamp</span>
         </div>
         <div class="file-item">
-          <img src="https://win98icons.alexmeub.com/icons/png/file_lines-4.png" width="32" />
+          <img src="https://win98icons.alexmeub.com/icons/png/notepad-1.png" width="32" />
           <span>LEIAME.txt</span>
         </div>
       </div>

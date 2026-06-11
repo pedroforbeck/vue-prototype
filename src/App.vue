@@ -30,7 +30,7 @@ onMounted(() => {
       </div>
       <div class="desktop-icon" @dblclick.stop="desktopStore.toggleWindow('winamp')">
         <div class="icon-img"><img src="/winamp-logo.png" width="40" /></div>
-        <div class="icon-text">WinWeb</div>
+        <div class="icon-text">VueNamp</div>
       </div>
     </div>
     
