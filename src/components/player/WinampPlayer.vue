@@ -1,13 +1,33 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useDraggable } from '@vueuse/core';
 import { usePlayerStore } from '../../stores/playerStore';
+import { useDesktopStore } from '../../stores/desktopStore';
 import { useSkinLoader } from '../../composables/useSkinLoader';
 import YouTubePlayer from './YouTubePlayer.vue';
 import LocalAudioPlayer from './LocalAudioPlayer.vue';
+import EqualizerWindow from './EqualizerWindow.vue';
 
 const playerStore = usePlayerStore();
+const desktopStore = useDesktopStore();
 const { parseSkin } = useSkinLoader();
+
+const winampState = computed(() => desktopStore.windows.find(w => w.id === 'winamp'));
+
+onMounted(async () => {
+  if (!playerStore.skin.main) {
+    try {
+      const response = await fetch('/base-2.91.wsz');
+      const blob = await response.blob();
+      const skinData = await parseSkin(blob);
+      if (skinData) {
+        playerStore.setSkin(skinData);
+      }
+    } catch (err) {
+      console.error('Falha ao carregar skin padrão:', err);
+    }
+  }
+});
 
 const playerRef = ref(null);
 const dragHandleRef = ref(null);
@@ -60,7 +80,13 @@ const skinVars = computed(() => {
 </script>
 
 <template>
-  <div class="draggable-wrapper" ref="playerRef" :style="playerStyle">
+  <div 
+    class="draggable-wrapper" 
+    ref="playerRef" 
+    :style="[playerStyle, { zIndex: winampState?.zIndex || 10 }]"
+    v-show="winampState?.isOpen && !winampState?.isMinimized"
+    @mousedown="desktopStore.focusWindow('winamp')"
+  >
     <div class="player-scaler">
       <!-- YouTube Player em cima -->
       <YouTubePlayer />
@@ -77,8 +103,8 @@ const skinVars = computed(() => {
       <div class="title-bar" ref="dragHandleRef">
         <div class="title-text">WINWEB</div>
         <div class="window-controls">
-          <button class="btn-min"></button>
-          <button class="btn-close"></button>
+          <button class="btn-min" @click.stop="desktopStore.toggleMinimize('winamp')"></button>
+          <button class="btn-close" @click.stop="desktopStore.toggleWindow('winamp')"></button>
         </div>
       </div>
     
@@ -87,7 +113,7 @@ const skinVars = computed(() => {
       <input 
         type="text" 
         placeholder="Cole o link do YouTube aqui..." 
-        @change="e => playerStore.loadYoutubeUrl(e.target.value)"
+        @change="e => playerStore.addYoutubeUrl(e.target.value)"
       />
     </div>
 
@@ -95,6 +121,11 @@ const skinVars = computed(() => {
     <div class="main-display">
       <div class="time-display">00:00</div>
       <div class="track-info">{{ trackDisplay }}</div>
+    </div>
+    
+    <div class="middle-controls">
+      <button class="btn-eq" :class="{ active: playerStore.isEqVisible }" @click="playerStore.isEqVisible = !playerStore.isEqVisible">EQ</button>
+      <input type="range" min="0" max="100" v-model.number="playerStore.volume" class="vol-slider" />
     </div>
     
     <!-- Área de Controles -->
@@ -106,6 +137,9 @@ const skinVars = computed(() => {
       <button class="btn next" @click="playerStore.nextTrack()">&gt;|</button>
     </div>
       </div>
+      
+      <!-- Janela do Equalizador (Acopla embaixo) -->
+      <EqualizerWindow />
     </div>
   </div>
 </template>
@@ -260,5 +294,33 @@ const skinVars = computed(() => {
 
 .url-input-container input::placeholder {
   color: #050;
+}
+
+.middle-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  margin-bottom: 2px;
+}
+
+.btn-eq {
+  background: #ccc;
+  border: 2px outset #eee;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 1px 4px;
+  font-family: sans-serif;
+  font-size: 9px;
+}
+
+.btn-eq:active, .btn-eq.active {
+  border-style: inset;
+  background: #aaa;
+}
+
+.vol-slider {
+  width: 60px;
 }
 </style>

@@ -23,6 +23,8 @@ export function useSkinLoader() {
       skinData.main = await getFileBlobUrl('main.bmp');
       skinData.titlebar = await getFileBlobUrl('titlebar.bmp');
       skinData.cbuttons = await getFileBlobUrl('cbuttons.bmp');
+      skinData.eqmain = await getFileBlobUrl('eqmain.bmp');
+      skinData.volume = await getFileBlobUrl('volume.bmp');
       
       return skinData;
     } catch (err) {

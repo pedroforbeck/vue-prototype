@@ -16,8 +16,13 @@ export const usePlayerStore = defineStore('player', () => {
   const skin = ref({
     main: null,
     titlebar: null,
-    cbuttons: null
+    cbuttons: null,
+    eqmain: null,
+    volume: null
   })
+
+  const isEqVisible = ref(false)
+  const eqBands = ref([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) // 10 bands from -12 to 12 db
 
   function play() {
     isPlaying.value = true
@@ -75,7 +80,9 @@ export const usePlayerStore = defineStore('player', () => {
   return { 
     isPlaying, currentTime, volume, skin, 
     playlist, currentIndex, currentTrack,
+    isEqVisible, eqBands,
     play, pause, nextTrack, prevTrack, 
-    addYoutubeUrl, addLocalAudio, setSkin 
+    addYoutubeUrl, addLocalAudio, 
+    setSkin
   }
 })

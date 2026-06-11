@@ -1,52 +1,110 @@
 <script setup>
+import { onMounted } from 'vue';
 import WinampPlayer from './components/player/WinampPlayer.vue';
-import TextPressure from './components/ui/TextPressure.vue';
+import Taskbar from './components/desktop/Taskbar.vue';
+import MyComputerWindow from './components/desktop/MyComputerWindow.vue';
+import MyFilesWindow from './components/desktop/MyFilesWindow.vue';
+import { useDesktopStore } from './stores/desktopStore';
+
+const desktopStore = useDesktopStore();
+
+onMounted(() => {
+  document.body.style.overflow = 'hidden';
+  document.body.style.margin = '0';
+  document.body.style.padding = '0';
+});
 </script>
 
 <template>
-  <main class="app-container">
-    <section class="hero">
-      <div class="hero-text-wrapper">
-        <TextPressure text="WIN WEB" textColor="var(--accent-color, #a855f7)" />
+  <main class="xp-desktop">
+    <!-- Ícones da Área de Trabalho -->
+    <div class="desktop-icons">
+      <div class="desktop-icon" @dblclick.stop="desktopStore.toggleWindow('mycomputer')">
+        <div class="icon-img"><img src="https://win98icons.alexmeub.com/icons/png/computer_explorer-4.png" width="40" /></div>
+        <div class="icon-text">Meu Computador</div>
       </div>
-      <p class="hero-subtitle">Player Reimagined</p>
-    </section>
+      <div class="desktop-icon" @dblclick.stop="desktopStore.toggleWindow('myfiles')">
+        <div class="icon-img"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png" width="40" /></div>
+        <div class="icon-text">Meus Arquivos</div>
+      </div>
+      <div class="desktop-icon" @dblclick.stop="desktopStore.toggleWindow('winamp')">
+        <div class="icon-img"><img src="/winamp-logo.png" width="40" /></div>
+        <div class="icon-text">WinWeb</div>
+      </div>
+    </div>
     
+    <!-- Janelas -->
+    <MyComputerWindow />
+    <MyFilesWindow />
     <WinampPlayer />
+    
+    <!-- Barra de Tarefas -->
+    <Taskbar />
   </main>
 </template>
 
+<style>
+html, body, #app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+</style>
+
 <style scoped>
-.app-container {
+.xp-desktop {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  /* Local Windows XP Wallpaper */
+  background-image: url('/winxp.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  font-family: 'Tahoma', sans-serif;
+}
+
+.desktop-icons {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.desktop-icon {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
-  background-color: #120F17;
-  color: white;
-  padding: 40px 20px;
+  width: 74px;
+  cursor: pointer;
+  user-select: none;
 }
 
-.hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 60px;
-  text-align: center;
+.desktop-icon:hover .icon-img {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
 }
 
-.hero-text-wrapper {
-  font-size: clamp(48px, 10vw, 120px);
-  font-weight: 900;
+.desktop-icon:active .icon-img {
+  background-color: rgba(0, 0, 255, 0.4);
+}
+
+.icon-img {
+  font-size: 38px;
+  padding: 5px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
   line-height: 1;
 }
 
-.hero-subtitle {
-  font-family: monospace;
-  letter-spacing: 4px;
-  opacity: 0.6;
-  margin-top: 10px;
-  font-size: 14px;
+.icon-text {
+  color: white;
+  font-size: 11px;
+  text-align: center;
+  text-shadow: 1px 1px 2px black, 0px 0px 2px black;
+  margin-top: 2px;
 }
 </style>

@@ -43,6 +43,7 @@ function initPlayer() {
 }
 
 function onPlayerReady(event) {
+  player.setVolume(playerStore.volume);
   if (playerStore.isPlaying) {
     player.playVideo();
   }
@@ -65,6 +66,12 @@ watch(() => playerStore.isPlaying, (playing) => {
     player.playVideo();
   } else {
     player.pauseVideo();
+  }
+});
+
+watch(() => playerStore.volume, (newVol) => {
+  if (player && player.setVolume) {
+    player.setVolume(newVol);
   }
 });
 
