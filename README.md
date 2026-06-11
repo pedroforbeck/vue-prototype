@@ -1,6 +1,6 @@
 <div align="center">
 
-<pre>
+```
  _   _             _   _                       
 | | | |           | \ | |                      
 | | | |_   _  ___ |  \| | __ _ _ __ ___  _ __  
@@ -9,97 +9,143 @@
  \___/ \__,_|\___|\_| \_/\__,_|_| |_| |_| .__/ 
                                         | |    
                                         |_|    
-</pre>
+```
 
-### 🎧 It really whips the DOM's ass! 🦙
 
-<p>
-  <img src="https://img.shields.io/badge/Vue.js-3.x-42b883?style=for-the-badge&logo=vuedotjs" alt="Vue 3" />
-  <img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" alt="Vite" />
-  <img src="https://img.shields.io/badge/Pinia-FFD859?style=for-the-badge&logo=pinia&logoColor=black" alt="Pinia" />
-  <img src="https://img.shields.io/badge/Web_Audio_API-000000?style=for-the-badge&logo=html5" alt="Web Audio API" />
-</p>
+<br/>
 
-*⚠️ SITE OTIMIZADO PARA INTERNET EXPLORER 6.0 EM RESOLUÇÃO 800x600 ⚠️*
+<img src="https://img.shields.io/badge/Vue.js-3.x-42b883?style=for-the-badge&logo=vuedotjs" />
+<img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" />
+<img src="https://img.shields.io/badge/Pinia-FFD859?style=for-the-badge&logo=pinia&logoColor=black" />
+<img src="https://img.shields.io/badge/Web_Audio_API-000000?style=for-the-badge&logo=html5" />
+
+<br/><br/>
+
+<a href="https://winamp.com"><img src="https://cyber.dabamos.de/88x31/winamp.gif" title="Winamp" /></a>
+<a href="https://microsoft.com"><img src="https://cyber.dabamos.de/88x31/ie02.gif" title="Best viewed in Internet Explorer 6" /></a>
+<a href="#"><img src="https://cyber.dabamos.de/88x31/msn.gif" title="MSN Messenger" /></a>
+<a href="#"><img src="https://cyber.dabamos.de/88x31/javascript.gif" title="Powered by JavaScript" /></a>
+<a href="#"><img src="https://cyber.dabamos.de/88x31/macromedia-flash.gif" title="Macromedia Flash" /></a>
+<a href="#"><img src="https://cyber.dabamos.de/88x31/adobe_get_flashplayer.gif" title="Get Flash Player" /></a>
+<a href="#"><img src="https://cyber.dabamos.de/88x31/realplayer.gif" title="RealPlayer" /></a>
+<a href="#"><img src="https://cyber.dabamos.de/88x31/icq.gif" title="ICQ" /></a>
+<a href="#"><img src="https://cyber.dabamos.de/88x31/800x600.gif" title="Best viewed at 800x600" /></a>
+<a href="#"><img src="https://cyber.dabamos.de/88x31/mozilla.gif" title="Mozilla" /></a>
+<a href="#"><img src="https://cyber.dabamos.de/88x31/notepad.gif" title="Made with Notepad" /></a>
+<a href="#"><img src="https://cyber.dabamos.de/88x31/w3c-html40.gif" title="W3C HTML 4.0" /></a>
+<a href="#"><img src="https://cyber.dabamos.de/88x31/98plusani.gif" title="Windows 98+" /></a>
+<a href="#"><img src="https://cyber.dabamos.de/88x31/photoshop.gif" title="Adobe Photoshop" /></a>
+<a href="#"><img src="https://cyber.dabamos.de/88x31/7zip.gif" title="7-Zip" /></a>
+<a href="#"><img src="https://cyber.dabamos.de/88x31/linux.gif" title="Linux Inside" /></a>
 
 </div>
 
 ---
 
-## 💿 Bem-vindo ao VueNamp (WinWeb)
+## ★彡 Bem-vindo ao VueNamp (WinWeb) 彡★
 
-Saudades da era de ouro da internet? Da época em que a gente baixava MP3 no Kazaa, usava o MSN Messenger e colecionava *skinz* do Winamp? 
+<img align="right" src="https://web.archive.org/web/20091013234702im_/http://geocities.com/punkrockgrunge/new_anim.gif" title="NEW!" />
 
-O **VueNamp** é uma verdadeira viagem no tempo direto para o seu navegador! Construímos um Desktop estilo Windows clássico (XP/98) que roda de forma nativa na web, trazendo um **Player de Áudio 100% Funcional** inspirado no lendário Winamp.
+Saudades da era de ouro da internet? Da epoca em que a gente baixava MP3 no **Kazaa**, usava o **MSN Messenger** e colecionava *skinz* do **Winamp**?
 
-## ⚡ Features (As novidades do Milênio!)
-
-*   🪟 **Área de Trabalho Clássica:** Janelas arrastáveis, minimizáveis e com aquela interface cinza/azul que todo mundo ama.
-*   🎵 **Toca MP3 Local e YouTube:** Arraste seus arquivos `.mp3` direto para o player ou adicione links do YouTube!
-*   🎛️ **Equalizador Gráfico de 10 Bandas:** Ajuste os graves e agudos em tempo real usando a poderosa *Web Audio API*.
-*   ✨ **Visualizador Milkdrop Isolado:** Gráficos que pulsam e reagem às frequências da música no melhor estilo psicodélico dos anos 2000!
-*   👗 **Suporte a Skins Oficiais (.wsz):** Tem alguma skin clássica do Winamp salva num disquete? Basta arrastar o arquivo `.wsz` ou `.zip` para o player e a interface se transforma na hora! (Sim, nós lemos os spritesheets bitmaps dos anos 90 👾).
-*   📱 **100% Responsivo e Touch-Ready:** Funciona no seu monitor de tubo e também no seu "telefone celular touch screen moderno". O player se adapta às bordas e converte os cliques perfeitamente para toques.
+O **VueNamp** e uma verdadeira viagem no tempo direto para o seu navegador! Construimos um Desktop estilo Windows classico (XP/98) que roda de forma nativa na web, trazendo um **Player de Audio 100% Funcional** inspirado no lendario Winamp.
 
 ---
 
-## 💾 Download e Instalação (Sem discador!)
+##  Features (As novidades do Milenio!) 
 
-Para rodar essa máquina do tempo na sua máquina local, você precisará ter o [Node.js](https://nodejs.org/) instalado.
+<img src="https://web.archive.org/web/20090830222904im_/http://geocities.com/SiliconValley/Peaks/3961/new.gif" width="40" /> &nbsp; **Area de Trabalho Classica**
+> Janelas arrastaveis, minimizaveis e com aquela interface cinza/azul que todo mundo ama.
+
+<img src="https://web.archive.org/web/20090830222904im_/http://geocities.com/SiliconValley/Peaks/3961/new.gif" width="40" /> &nbsp; **Toca MP3 Local e YouTube**
+> Arraste seus arquivos `.mp3` direto para o player ou adicione links do YouTube!
+
+<img src="https://web.archive.org/web/20090830222904im_/http://geocities.com/SiliconValley/Peaks/3961/new.gif" width="40" /> &nbsp; **Equalizador Grafico de 10 Bandas**
+> Ajuste os graves e agudos em tempo real usando a poderosa *Web Audio API*.
+
+<img src="https://web.archive.org/web/20090830222904im_/http://geocities.com/SiliconValley/Peaks/3961/new.gif" width="40" /> &nbsp; **Visualizador Milkdrop Isolado**
+> Graficos que pulsam e reagem as frequencias da musica no melhor estilo psicadelico dos anos 2000!
+
+<img src="https://web.archive.org/web/20090830222904im_/http://geocities.com/SiliconValley/Peaks/3961/new.gif" width="40" /> &nbsp; **Suporte a Skins Oficiais (.wsz)**
+> Arraste o arquivo `.wsz` para o player e a interface se transforma na hora! (Lemos os spritesheets bitmaps dos anos 90)
+
+<img src="https://web.archive.org/web/20090830222904im_/http://geocities.com/SiliconValley/Peaks/3961/new.gif" width="40" /> &nbsp; **100% Responsivo e Touch-Ready**
+> Funciona no seu monitor de tubo e tambem no seu celular touch screen moderno.
+
+---
+
+## ★ Download e Instalacao (Sem discador!) ★
+
+<div align="center">
+<img src="https://web.archive.org/web/20091027131714im_/http://www.geocities.com/SiliconValley/Pines/4346/undconst.gif" title="Under Construction!" />
+&nbsp;&nbsp;
+<img src="https://cyber.dabamos.de/88x31/XPrfGrp.gif" title="Windows XP" />
+&nbsp;&nbsp;
+<img src="https://cyber.dabamos.de/88x31/7zip.gif" title="7-Zip" />
+</div>
+
+<br/>
+
+Para rodar essa maquina do tempo, voce precisara ter o [Node.js](https://nodejs.org/) instalado.
 
 ```bash
-# 1. Faça o clone do repositório (Não precisa de gerenciador de downloads Puxa Rápido)
+# 1. Clone o repositorio (Nao precisa do Puxa Rapido)
 git clone https://github.com/pedroforbeck/vue-prototype.git
 
 # 2. Entre na pasta
 cd vue-prototype
 
-# 3. Instale as dependências da Web 2.0
+# 3. Instale as dependencias da Web 2.0
 npm install
 
 # 4. Inicie o Servidor Local
 npm run dev
 ```
 
-Abra `http://localhost:5173` no seu navegador de preferência e surfe na web! 🏄‍♂️
+Abra `http://localhost:5173` no seu navegador e surfe na web! 
 
 ---
 
-## 🛠️ O que tem debaixo do capô?
+##  O que tem debaixo do capo? 
 
-Embora pareça ter saído de um CD da revista CD-ROM Today de 1999, esse projeto usa tecnologia de ponta:
-
-*   **Vue 3 (Composition API):** O motor V8 turbinado por trás da interface.
-*   **Vite:** Compilação na velocidade da luz.
-*   **Pinia:** Nosso cérebro de estado central para gerenciar qual música está tocando e qual skin está ativa globalmente.
-*   **VueUse:** Para a magia de arrastar as janelas livremente pela tela e limites responsivos (`useDraggable`, `useWindowSize`).
-*   **Web Audio API:** Para criar os `AnalyserNodes`, `BiquadFilterNodes` (Equalizador) e conectar as frequências da sua MP3 diretamente no Visualizador Milkdrop.
-*   **JSZip:** Para descompactar os pacotes de skin `.wsz` na memória do navegador e trocar os sprites!
+| Tecnologia | Funcao |
+|---|---|
+| **Vue 3 (Composition API)** | Motor AP 2.0 forjado por tras da interface |
+| **Vite** | Compilacao na velocidade da luz |
+| **Pinia** | Cerebro de estado central — qual musica toca, qual skin esta ativa |
+| **VueUse** | Magia de arrastar janelas (`useDraggable`, `useWindowSize`) |
+| **Web Audio API** | `AnalyserNodes`, `BiquadFilterNodes` (EQ), frequencias pro Milkdrop |
+| **JSZip** | Descompacta `.wsz` na memoria do navegador e troca os sprites |
 
 ---
 
-## 🎨 Como usar Skins?
+##  Como usar Skins? 
 
-1. Baixe skins clássicas (sugerimos o [Winamp Skin Museum](https://skins.webamp.org/)).
-2. Pegue o arquivo `.wsz` baixado.
-3. Arraste e solte em cima do Player no VueNamp.
-4. *Puf!* Seu player mudou de cara!
+1. Baixe skins classicas em **[Winamp Skin Museum](https://skins.webamp.org/)**
+2. Pegue o arquivo `.wsz` baixado
+3. Arraste e solte em cima do Player no VueNamp
+4. ***Puf!*** Seu player mudou de cara!
 
 ---
 
 <div align="center">
 
-<img src="public/supra.png" width="300" /><br>
-<br>
+<img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGduejN3OGJkeDcyN2gwOTd4YTF5b3hwbW9qcm84NnFiMXEydmVhbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/n0tQZejx4Rh28/giphy.gif" width="130" />
 
-<p align="center">
-  <img src="https://cyber.dabamos.de/88x31/ie02.gif" alt="IE Compatible">
-  <img src="https://cyber.dabamos.de/88x31/w3c-html40.gif" alt="W3C Valid">
-  <img src="https://cyber.dabamos.de/88x31/winamp.gif" alt="Winamp Rules">
-  <img src="https://cyber.dabamos.de/88x31/notepad.gif" alt="Made with Notepad">
-</p>
+<br/>
 
-<i>Feito com muita nostalgia e cafeína. ☕</i><br>
-<i>VueNamp © 2026 - All Rights Reserved.</i>
+<img src="https://cyber.dabamos.de/88x31/ie02.gif" />
+<img src="https://cyber.dabamos.de/88x31/w3c-html40.gif" />
+<img src="https://cyber.dabamos.de/88x31/winamp.gif" />
+<img src="https://cyber.dabamos.de/88x31/notepad.gif" />
+<img src="https://cyber.dabamos.de/88x31/800x600.gif" />
+
+<br/><br/>
+
+*VueNamp © 2026 — All Rights Reserved*
+
+<br/>
+
+*~~~ best viewed in 800x600 with internet explorer 6.0 ~~~*
 
 </div>
