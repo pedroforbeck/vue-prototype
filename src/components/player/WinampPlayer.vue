@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { useDraggable } from '@vueuse/core';
+import { useDraggable, useWindowSize } from '@vueuse/core';
 import { usePlayerStore } from '../../stores/playerStore';
 import { useDesktopStore } from '../../stores/desktopStore';
 import { useSkinLoader } from '../../composables/useSkinLoader';
@@ -32,6 +32,7 @@ onMounted(async () => {
 
 const playerRef = ref(null);
 const dragHandleRef = ref(null);
+const { width: winWidth, height: winHeight } = useWindowSize();
 
 const { x, y } = useDraggable(playerRef, {
   initialValue: { 
@@ -41,10 +42,14 @@ const { x, y } = useDraggable(playerRef, {
   handle: dragHandleRef
 });
 
-const playerStyle = computed(() => ({
-  left: `${x.value}px`,
-  top: `${y.value}px`,
-}));
+const playerStyle = computed(() => {
+  const clampedX = Math.max(0, Math.min(x.value, winWidth.value - 275));
+  const clampedY = Math.max(0, Math.min(y.value, winHeight.value - 116 - 30));
+  return {
+    left: `${clampedX}px`,
+    top: `${clampedY}px`,
+  };
+});
 
 const handleDrop = async (e) => {
   const file = e.dataTransfer.files[0];

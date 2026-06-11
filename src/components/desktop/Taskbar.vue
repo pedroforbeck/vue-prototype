@@ -174,4 +174,18 @@ onUnmounted(() => {
 .time {
   text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
 }
+
+@media (max-width: 600px) {
+  .start-text {
+    display: none;
+  }
+  .taskbar-item {
+    min-width: 0;
+    flex: 1;
+    padding: 0 5px;
+  }
+  .system-tray .year {
+    display: none;
+  }
+}
 </style>

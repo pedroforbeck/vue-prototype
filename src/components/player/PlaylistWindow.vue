@@ -8,7 +8,13 @@ const desktopStore = useDesktopStore();
 
 const playTrack = (index) => {
   playerStore.currentIndex = index;
-  playerStore.isPlaying = true;
+  playerStore.play();
+};
+
+const handleTouchPlay = (index, e) => {
+  if (e.pointerType === 'touch') {
+    playTrack(index);
+  }
 };
 
 const playlistStyle = computed(() => {
@@ -39,7 +45,9 @@ const promptAddYoutube = () => {
         :key="index"
         class="pl-track"
         :class="{ active: playerStore.currentIndex === index }"
+        @click="playerStore.currentIndex = index"
         @dblclick="playTrack(index)"
+        @pointerup="handleTouchPlay(index, $event)"
       >
         {{ index + 1 }}. {{ track.title }}
       </div>
