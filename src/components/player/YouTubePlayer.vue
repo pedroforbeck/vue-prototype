@@ -1,10 +1,12 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
-import { usePlayerStore } from '../stores/playerStore';
+import { ref, onMounted, watch, computed } from 'vue';
+import { usePlayerStore } from '../../stores/playerStore';
 
 const playerStore = usePlayerStore();
 const ytContainer = ref(null);
 let player = null;
+
+const isYoutubeTrack = computed(() => playerStore.currentTrack?.type === 'youtube');
 
 onMounted(() => {
   if (!window.YT || !window.YT.Player) {
@@ -25,7 +27,7 @@ function initPlayer() {
   player = new window.YT.Player(ytContainer.value, {
     height: '155',  // Proporção ~16:9 ajustada para a largura do Winamp
     width: '275',   // Mesma largura do Winamp (275px)
-    videoId: playerStore.videoId,
+    videoId: playerStore.currentTrack?.type === 'youtube' ? playerStore.currentTrack.id : '',
     playerVars: {
       autoplay: 0,
       controls: 1, 
@@ -41,6 +43,7 @@ function initPlayer() {
 }
 
 function onPlayerReady(event) {
+  player.setVolume(playerStore.volume);
   if (playerStore.isPlaying) {
     player.playVideo();
   }
@@ -49,33 +52,44 @@ function onPlayerReady(event) {
 function onPlayerStateChange(event) {
   if (event.data === window.YT.PlayerState.PLAYING) {
     playerStore.isPlaying = true;
-  } else if (event.data === window.YT.PlayerState.PAUSED || event.data === window.YT.PlayerState.ENDED) {
+  } else if (event.data === window.YT.PlayerState.PAUSED) {
     playerStore.isPlaying = false;
+  } else if (event.data === window.YT.PlayerState.ENDED) {
+    playerStore.isPlaying = false;
+    playerStore.nextTrack();
   }
 }
 
 watch(() => playerStore.isPlaying, (playing) => {
   if (!player || !player.playVideo) return;
-  if (playing) {
+  if (playing && isYoutubeTrack.value) {
     player.playVideo();
   } else {
     player.pauseVideo();
   }
 });
 
-watch(() => playerStore.videoId, (newId) => {
+watch(() => playerStore.volume, (newVol) => {
+  if (player && player.setVolume) {
+    player.setVolume(newVol);
+  }
+});
+
+watch(() => playerStore.currentTrack, (newTrack) => {
   if (!player || !player.loadVideoById) return;
-  if (newId) {
-    player.loadVideoById(newId);
+  if (newTrack && newTrack.type === 'youtube') {
+    player.loadVideoById(newTrack.id);
     if (playerStore.isPlaying) {
       player.playVideo();
     }
+  } else {
+    player.pauseVideo();
   }
 });
 </script>
 
 <template>
-  <div class="youtube-visible-container">
+  <div class="youtube-visible-container" v-show="isYoutubeTrack">
     <div class="window-title">Vídeo YouTube</div>
     <div ref="ytContainer"></div>
   </div>
