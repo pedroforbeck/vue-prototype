@@ -89,7 +89,7 @@ Embora pareça ter saído de um CD da revista CD-ROM Today de 1999, esse projeto
 
 <div align="center">
 
-<img src="https://media.giphy.com/media/3kcZBP33hEAglBAheM/giphy.gif" width="200" /><br>
+<img src="public/supra.png" width="300" /><br>
 <br>
 
 <p align="center">
