@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { useDraggable } from '@vueuse/core';
+import { useDraggable, useWindowSize } from '@vueuse/core';
 import { useDesktopStore } from '../../stores/desktopStore';
 
 const props = defineProps({
@@ -31,6 +31,7 @@ const winState = computed(() => desktopStore.windows.find(w => w.id === props.wi
 
 const windowRef = ref(null);
 const dragHandleRef = ref(null);
+const { width: winWidth, height: winHeight } = useWindowSize();
 
 const { x, y } = useDraggable(windowRef, {
   initialValue: { 
@@ -40,13 +41,22 @@ const { x, y } = useDraggable(windowRef, {
   handle: dragHandleRef
 });
 
-const style = computed(() => ({
-  left: `${x.value}px`,
-  top: `${y.value}px`,
-  zIndex: winState.value?.zIndex || 10,
-  width: `${props.initialWidth}px`,
-  height: `${props.initialHeight}px`
-}));
+const style = computed(() => {
+  const currentWidth = Math.min(props.initialWidth, winWidth.value);
+  const currentHeight = Math.min(props.initialHeight, winHeight.value - 30);
+  const clampedX = Math.max(0, Math.min(x.value, winWidth.value - currentWidth));
+  const clampedY = Math.max(0, Math.min(y.value, winHeight.value - currentHeight - 30));
+  
+  return {
+    left: `${clampedX}px`,
+    top: `${clampedY}px`,
+    zIndex: winState.value?.zIndex || 10,
+    width: `${currentWidth}px`,
+    height: `${currentHeight}px`,
+    maxWidth: '100vw',
+    maxHeight: 'calc(100dvh - 30px)'
+  };
+});
 </script>
 
 <template>

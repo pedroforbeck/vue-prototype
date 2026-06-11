@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
 import { usePlayerStore } from '../../stores/playerStore';
 
 const playerStore = usePlayerStore();
@@ -12,27 +12,14 @@ const eqNodes = [];
 
 const isLocalTrack = computed(() => playerStore.currentTrack?.type === 'local');
 
-watch(() => playerStore.isPlaying, (playing) => {
-  if (!audioRef.value) return;
-  if (playing && isLocalTrack.value) {
-    audioRef.value.play();
-  } else {
-    audioRef.value.pause();
-  }
-});
-
-watch(() => playerStore.currentTrack, (newTrack) => {
-  if (!audioRef.value) return;
-  if (newTrack && newTrack.type === 'local') {
+onMounted(() => {
+  playerStore.localAudioEl = audioRef.value;
+  playerStore.initWebAudio = () => {
     if (!audioContext) initWebAudio();
-    audioRef.value.src = newTrack.url;
-    audioRef.value.load();
-    if (playerStore.isPlaying) {
-      audioRef.value.play();
+    if (audioContext && audioContext.state === 'suspended') {
+      audioContext.resume();
     }
-  } else {
-    audioRef.value.pause();
-  }
+  };
 });
 
 watch(() => playerStore.volume, (newVol) => {
@@ -109,9 +96,7 @@ const onPause = () => {
 <template>
   <audio 
     ref="audioRef" 
-    @ended="onEnded"
-    @play="onPlay"
-    @pause="onPause"
-    style="display: none;"
+    @timeupdate="playerStore.currentTime = audioRef.currentTime"
+    @ended="playerStore.nextTrack()"
   ></audio>
 </template>

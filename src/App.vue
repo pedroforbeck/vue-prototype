@@ -14,21 +14,30 @@ onMounted(() => {
   document.body.style.margin = '0';
   document.body.style.padding = '0';
 });
+
+const handleTouchOpen = (id, e) => {
+  if (e.pointerType === 'touch') {
+    const win = desktopStore.windows.find(w => w.id === id);
+    if (!win.isOpen) {
+      desktopStore.toggleWindow(id);
+    }
+  }
+};
 </script>
 
 <template>
   <main class="xp-desktop">
     <!-- Ícones da Área de Trabalho -->
     <div class="desktop-icons">
-      <div class="desktop-icon" @dblclick.stop="desktopStore.toggleWindow('mycomputer')">
+      <div class="desktop-icon" @dblclick.stop="desktopStore.toggleWindow('mycomputer')" @pointerup="handleTouchOpen('mycomputer', $event)">
         <div class="icon-img"><img src="https://win98icons.alexmeub.com/icons/png/computer_explorer-4.png" width="40" /></div>
         <div class="icon-text">Meu Computador</div>
       </div>
-      <div class="desktop-icon" @dblclick.stop="desktopStore.toggleWindow('myfiles')">
+      <div class="desktop-icon" @dblclick.stop="desktopStore.toggleWindow('myfiles')" @pointerup="handleTouchOpen('myfiles', $event)">
         <div class="icon-img"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png" width="40" /></div>
         <div class="icon-text">Meus Arquivos</div>
       </div>
-      <div class="desktop-icon" @dblclick.stop="desktopStore.toggleWindow('winamp')">
+      <div class="desktop-icon" @dblclick.stop="desktopStore.toggleWindow('winamp')" @pointerup="handleTouchOpen('winamp', $event)">
         <div class="icon-img"><img src="/winamp-logo.png" width="40" /></div>
         <div class="icon-text">VueNamp</div>
       </div>
