@@ -7,6 +7,11 @@ export const usePlayerStore = defineStore('player', () => {
   const volume = ref(100)
   // ID de um vídeo normal do YouTube para não dar erro de restrição de domínio
   const videoId = ref('jNQXAC9IVRw') 
+  const skin = ref({
+    main: null,
+    titlebar: null,
+    cbuttons: null
+  })
 
   function play() {
     isPlaying.value = true
@@ -27,5 +32,11 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
-  return { isPlaying, currentTime, volume, videoId, play, pause, loadYoutubeUrl }
+  function setSkin(skinData) {
+    if (skinData) {
+      skin.value = { ...skin.value, ...skinData }
+    }
+  }
+
+  return { isPlaying, currentTime, volume, videoId, skin, play, pause, loadYoutubeUrl, setSkin }
 })

@@ -2,9 +2,11 @@
 import { ref, computed } from 'vue';
 import { useDraggable } from '@vueuse/core';
 import { usePlayerStore } from '../../stores/playerStore';
+import { useSkinLoader } from '../../composables/useSkinLoader';
 import YouTubePlayer from './YouTubePlayer.vue';
 
 const playerStore = usePlayerStore();
+const { parseSkin } = useSkinLoader();
 
 const playerRef = ref(null);
 const dragHandleRef = ref(null);
@@ -23,15 +25,41 @@ const playerStyle = computed(() => ({
   left: '0px',
   top: '0px'
 }));
+
+const handleDrop = async (e) => {
+  const file = e.dataTransfer.files[0];
+  if (file && (file.name.endsWith('.wsz') || file.name.endsWith('.zip'))) {
+    const skinData = await parseSkin(file);
+    if (skinData) {
+      playerStore.setSkin(skinData);
+    }
+  }
+};
+
+const skinVars = computed(() => {
+  const s = playerStore.skin;
+  return {
+    '--skin-main': s.main ? `url(${s.main})` : 'none',
+    '--skin-titlebar': s.titlebar ? `url(${s.titlebar})` : 'none',
+    '--skin-cbuttons': s.cbuttons ? `url(${s.cbuttons})` : 'none',
+    '--skin-border': s.main ? 'none' : '1px solid var(--winamp-border-light)'
+  };
+});
 </script>
 
 <template>
   <div class="draggable-wrapper" ref="playerRef" :style="playerStyle">
-    <!-- YouTube Player em cima -->
+    <div class="player-scaler">
+      <!-- YouTube Player em cima -->
     <YouTubePlayer />
 
     <!-- Interface Principal do Winamp na parte inferior -->
-    <div class="winamp-window">
+    <div 
+      class="winamp-window" 
+      :style="skinVars"
+      @dragover.prevent 
+      @drop.prevent="handleDrop"
+    >
       <!-- Barra de Título -->
       <div class="title-bar" ref="dragHandleRef">
         <div class="title-text">WINWEB</div>
@@ -64,6 +92,7 @@ const playerStyle = computed(() => ({
       <button class="btn stop" @click="playerStore.pause()">[]</button>
       <button class="btn next">&gt;|</button>
     </div>
+      </div>
     </div>
   </div>
 </template>
@@ -76,11 +105,20 @@ const playerStyle = computed(() => ({
   gap: 0; /* Grudados um no outro */
 }
 
+.player-scaler {
+  transform: scale(1.4);
+  transform-origin: top left;
+  display: flex;
+  flex-direction: column;
+}
+
 .winamp-window {
   width: 275px;
   height: 116px;
   background-color: var(--winamp-bg);
-  border: 1px solid var(--winamp-border-light);
+  background-image: var(--skin-main);
+  background-position: top left;
+  border: var(--skin-border);
   box-shadow: 2px 2px 0 var(--winamp-border-dark), 
               inset 1px 1px 0 rgba(255, 255, 255, 0.2);
   display: flex;
@@ -94,6 +132,8 @@ const playerStyle = computed(() => ({
 .title-bar {
   height: 14px;
   background: linear-gradient(to right, #000080, #1084d0);
+  background-image: var(--skin-titlebar);
+  background-position: 0px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -153,25 +193,42 @@ const playerStyle = computed(() => ({
 
 .controls {
   display: flex;
-  justify-content: center;
-  gap: 4px;
+  gap: 0px;
   margin-top: auto;
-  margin-bottom: 5px;
+  margin-bottom: 9px;
+  margin-left: 10px;
 }
 
 .btn {
   background: #ccc;
-  border: 2px outset #eee;
-  color: black;
-  font-weight: bold;
+  background-image: var(--skin-cbuttons);
+  background-repeat: no-repeat;
+  border: none;
   cursor: pointer;
-  padding: 2px 6px;
-  font-family: monospace;
+  width: 23px;
+  height: 18px;
+  text-indent: -9999px; /* Esconde o texto quando usa imagem */
+  color: transparent;
 }
 
 .btn:active {
-  border-style: inset;
+  transform: translateY(1px);
 }
+
+.btn.prev { background-position: 0px 0px; }
+.btn.prev:active { background-position: 0px -18px; }
+
+.btn.play { background-position: -23px 0px; }
+.btn.play:active { background-position: -23px -18px; }
+
+.btn.pause { background-position: -46px 0px; }
+.btn.pause:active { background-position: -46px -18px; }
+
+.btn.stop { background-position: -69px 0px; }
+.btn.stop:active { background-position: -69px -18px; }
+
+.btn.next { width: 22px; background-position: -92px 0px; }
+.btn.next:active { background-position: -92px -18px; }
 
 .url-input-container {
   padding: 2px 5px;
