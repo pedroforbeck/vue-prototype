@@ -1,38 +1,59 @@
 <script setup>
 import { computed } from 'vue';
 import { usePlayerStore } from '../../stores/playerStore';
+import { useDesktopStore } from '../../stores/desktopStore';
 
 const playerStore = usePlayerStore();
+const desktopStore = useDesktopStore();
 
 const eqStyle = computed(() => {
   const s = playerStore.skin;
   return {
     '--skin-eqmain': s.eqmain ? `url(${s.eqmain})` : 'none',
-    '--skin-border': s.eqmain ? 'none' : '1px solid var(--winamp-border-light)'
   };
 });
 
-const frequencies = ['60', '170', '310', '600', '1K', '3K', '6K', '12K', '14K', '16K'];
+const getThumbStyle = (val, maxVal) => {
+  const percentage = Math.max(0, Math.min(1, val / maxVal));
+  const bottom = percentage * 52; // 63px (trilha) - 11px (pino) = 52px de curso
+  const s = playerStore.skin;
+  return {
+    bottom: `${bottom}px`,
+    backgroundImage: s.eqmain ? `url(${s.eqmain})` : 'none',
+    backgroundPosition: '0 -164px'
+  };
+};
 </script>
 
 <template>
   <div class="eq-window" :style="eqStyle" v-if="playerStore.isEqVisible">
-    <!-- Barra de Título do EQ -->
-    <div class="eq-title-bar">
-      <div class="title-text">WINWEB EQUALIZER</div>
-      <button class="btn-close" @click="playerStore.isEqVisible = false"></button>
-    </div>
+    <!-- Area clicavel do titulo para focar -->
+    <div class="eq-title-bar-area" @mousedown="desktopStore.focusWindow('winamp')"></div>
+    <div class="btn-close-area" @click.stop="playerStore.isEqVisible = false"></div>
     
+    <!-- PREAMP (Volume) -->
+    <div class="preamp-container">
+      <div class="slider-wrapper">
+        <div class="eq-thumb-visual" :style="getThumbStyle(playerStore.volume, 100)"></div>
+        <input 
+          type="range" min="0" max="100" 
+          v-model.number="playerStore.volume"
+          class="eq-slider-invisible"
+        />
+      </div>
+    </div>
+
+    <!-- BANDAS DE FREQUÊNCIA -->
     <div class="eq-sliders">
       <div class="slider-wrapper" v-for="(val, index) in playerStore.eqBands" :key="index">
+        <div class="eq-thumb-visual" :style="getThumbStyle(val + 12, 24)"></div>
         <input 
           type="range" 
           min="-12" 
           max="12" 
           v-model.number="playerStore.eqBands[index]"
-          class="eq-slider"
+          class="eq-slider-invisible"
         />
-        <div class="freq-label">{{ frequencies[index] }}</div>
       </div>
     </div>
   </div>
@@ -42,84 +63,74 @@ const frequencies = ['60', '170', '310', '600', '1K', '3K', '6K', '12K', '14K', 
 .eq-window {
   width: 275px;
   height: 116px;
-  background-color: var(--winamp-bg);
+  background-color: #000;
   background-image: var(--skin-eqmain);
   background-position: top left;
-  border: var(--skin-border);
-  box-shadow: 2px 2px 0 var(--winamp-border-dark), 
-              inset 1px 1px 0 rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column;
-  padding: 2px;
+  position: relative;
   user-select: none;
-  font-family: 'VT323', monospace;
   image-rendering: pixelated;
-  /* Gruda imediatamente abaixo da janela principal */
   margin-top: 0px; 
   box-sizing: border-box;
 }
 
-.eq-title-bar {
+.eq-title-bar-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 250px;
   height: 14px;
-  background: linear-gradient(to right, #000080, #1084d0);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 2px;
+  cursor: grab;
 }
 
-.title-text {
-  font-family: sans-serif;
-  font-size: 10px;
-  color: white;
-  font-weight: bold;
+.eq-title-bar-area:active {
+  cursor: grabbing;
 }
 
-.btn-close {
+.btn-close-area {
+  position: absolute;
+  top: 3px;
+  right: 3px;
   width: 9px;
   height: 9px;
-  background: #ccc;
-  border: 1px outset #fff;
   cursor: pointer;
+}
+
+.preamp-container {
+  position: absolute;
+  top: 38px;
+  left: 21px;
 }
 
 .eq-sliders {
   display: flex;
-  justify-content: center;
-  gap: 2px;
-  margin-top: auto;
-  margin-bottom: 5px;
+  justify-content: flex-start;
+  gap: 0;
+  position: absolute;
+  top: 38px;
+  left: 78px;
 }
 
 .slider-wrapper {
+  position: relative;
+  width: 18px; 
+  height: 63px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 20px;
+  justify-content: center;
 }
 
-.eq-slider {
-  writing-mode: bt-lr; /* IE */
-  -webkit-appearance: slider-vertical; /* WebKit */
+.eq-slider-invisible {
+  writing-mode: bt-lr; 
+  -webkit-appearance: slider-vertical; 
   appearance: slider-vertical;
   width: 14px;
-  height: 60px;
-  background: transparent;
-}
-
-/* Custom thumb to look vaguely like Winamp sliders */
-.eq-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  height: 8px;
-  width: 14px;
-  background: #ccc;
-  border: 1px outset #eee;
+  height: 63px;
   cursor: pointer;
+  background-color: transparent;
 }
 
-.freq-label {
-  font-size: 10px;
-  color: var(--winamp-text);
-  margin-top: 2px;
+.eq-slider:active::-moz-range-thumb {
+  background-position: 0 -176px;
 }
 </style>

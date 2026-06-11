@@ -7,6 +7,7 @@ import { useSkinLoader } from '../../composables/useSkinLoader';
 import YouTubePlayer from './YouTubePlayer.vue';
 import LocalAudioPlayer from './LocalAudioPlayer.vue';
 import EqualizerWindow from './EqualizerWindow.vue';
+import PlaylistWindow from './PlaylistWindow.vue';
 
 const playerStore = usePlayerStore();
 const desktopStore = useDesktopStore();
@@ -35,46 +36,44 @@ const dragHandleRef = ref(null);
 const { x, y } = useDraggable(playerRef, {
   initialValue: { 
     x: Math.max(0, (window.innerWidth - 275) / 2), 
-    y: Math.max(20, (window.innerHeight - 271) / 2) // 155 (YT) + 116 (Winamp) = 271px
+    y: Math.max(20, (window.innerHeight - 271) / 2) 
   },
   handle: dragHandleRef
 });
 
-// Usando transform (GPU-accelerated) no lugar de left/top para acabar com a lentidão
 const playerStyle = computed(() => ({
-  transform: `translate(${x.value}px, ${y.value}px)`,
-  left: '0px',
-  top: '0px'
+  left: `${x.value}px`,
+  top: `${y.value}px`,
 }));
 
 const handleDrop = async (e) => {
   const file = e.dataTransfer.files[0];
   if (!file) return;
-
+  
   if (file.name.endsWith('.wsz') || file.name.endsWith('.zip')) {
     const skinData = await parseSkin(file);
     if (skinData) {
       playerStore.setSkin(skinData);
     }
-  } else if (file.name.endsWith('.mp3') || file.type.startsWith('audio/')) {
+    return;
+  }
+  
+  if (file.type.startsWith('audio/')) {
     playerStore.addLocalAudio(file);
+    playerStore.play();
   }
 };
 
 const trackDisplay = computed(() => {
-  if (!playerStore.currentTrack) return 'WinWeb v1.0';
-  const idx = playerStore.currentIndex + 1;
-  const total = playerStore.playlist.length;
-  return `[${idx}/${total}] ${playerStore.currentTrack.title}`;
+  const track = playerStore.currentTrack;
+  return track ? track.title : 'WINAMP - ARRASTE UMA MÚSICA OU TEMA';
 });
 
 const skinVars = computed(() => {
   const s = playerStore.skin;
   return {
     '--skin-main': s.main ? `url(${s.main})` : 'none',
-    '--skin-titlebar': s.titlebar ? `url(${s.titlebar})` : 'none',
     '--skin-cbuttons': s.cbuttons ? `url(${s.cbuttons})` : 'none',
-    '--skin-border': s.main ? 'none' : '1px solid var(--winamp-border-light)'
   };
 });
 </script>
@@ -88,58 +87,43 @@ const skinVars = computed(() => {
     @mousedown="desktopStore.focusWindow('winamp')"
   >
     <div class="player-scaler">
-      <!-- YouTube Player em cima -->
+      <!-- Motores de Áudio -->
       <YouTubePlayer />
       <LocalAudioPlayer />
 
-      <!-- Interface Principal do Winamp na parte inferior -->
-    <div 
-      class="winamp-window" 
-      :style="skinVars"
-      @dragover.prevent 
-      @drop.prevent="handleDrop"
-    >
-      <!-- Barra de Título -->
-      <div class="title-bar" ref="dragHandleRef">
-        <div class="title-text">WINWEB</div>
-        <div class="window-controls">
-          <button class="btn-min" @click.stop="desktopStore.toggleMinimize('winamp')"></button>
-          <button class="btn-close" @click.stop="desktopStore.toggleWindow('winamp')"></button>
+      <!-- Janela Principal do Winamp -->
+      <div 
+        class="winamp-main-window" 
+        :style="skinVars"
+        @dragover.prevent 
+        @drop.prevent="handleDrop"
+      >
+        <!-- Barra de Título (Para arrastar) -->
+        <div class="title-bar-area" ref="dragHandleRef"></div>
+        
+        <!-- Controles de janela invisíveis sobre a arte gráfica -->
+        <div class="btn-min-area" @click.stop="desktopStore.toggleMinimize('winamp')"></div>
+        <div class="btn-close-area" @click.stop="desktopStore.toggleWindow('winamp')"></div>
+        
+        <!-- Controles de reprodução usando Sprite -->
+        <div class="transport-controls">
+          <button class="sprite-btn btn-prev" @click="playerStore.prevTrack()"></button>
+          <button class="sprite-btn btn-play" @click="playerStore.play()"></button>
+          <button class="sprite-btn btn-pause" @click="playerStore.pause()"></button>
+          <button class="sprite-btn btn-stop" @click="playerStore.pause()"></button>
+          <button class="sprite-btn btn-next" @click="playerStore.nextTrack()"></button>
+        </div>
+
+        <!-- Sobreposição de Info da Faixa -->
+        <div class="track-info-overlay">
+          <div class="scrolling-text">{{ trackDisplay }}</div>
         </div>
       </div>
-    
-    <!-- Entrada de URL -->
-    <div class="url-input-container">
-      <input 
-        type="text" 
-        placeholder="Cole o link do YouTube aqui..." 
-        @change="e => playerStore.addYoutubeUrl(e.target.value)"
-      />
-    </div>
-
-    <!-- Área Principal do Display -->
-    <div class="main-display">
-      <div class="time-display">00:00</div>
-      <div class="track-info">{{ trackDisplay }}</div>
-    </div>
-    
-    <div class="middle-controls">
-      <button class="btn-eq" :class="{ active: playerStore.isEqVisible }" @click="playerStore.isEqVisible = !playerStore.isEqVisible">EQ</button>
-      <input type="range" min="0" max="100" v-model.number="playerStore.volume" class="vol-slider" />
-    </div>
-    
-    <!-- Área de Controles -->
-    <div class="controls">
-      <button class="btn prev" @click="playerStore.prevTrack()">|&lt;</button>
-      <button class="btn play" @click="playerStore.play()">&gt;</button>
-      <button class="btn pause" @click="playerStore.pause()">||</button>
-      <button class="btn stop" @click="playerStore.pause()">[]</button>
-      <button class="btn next" @click="playerStore.nextTrack()">&gt;|</button>
-    </div>
-      </div>
       
-      <!-- Janela do Equalizador (Acopla embaixo) -->
+      <!-- Equalizador grudado logo abaixo -->
       <EqualizerWindow />
+      <!-- Playlist grudada abaixo do EQ -->
+      <PlaylistWindow />
     </div>
   </div>
 </template>
@@ -149,7 +133,7 @@ const skinVars = computed(() => {
   position: absolute;
   display: flex;
   flex-direction: column;
-  gap: 0; /* Grudados um no outro */
+  gap: 0;
 }
 
 .player-scaler {
@@ -159,168 +143,114 @@ const skinVars = computed(() => {
   flex-direction: column;
 }
 
-.winamp-window {
+/* Strict 275x116 window */
+.winamp-main-window {
   width: 275px;
   height: 116px;
-  background-color: var(--winamp-bg);
   background-image: var(--skin-main);
   background-position: top left;
-  border: var(--skin-border);
-  box-shadow: 2px 2px 0 var(--winamp-border-dark), 
-              inset 1px 1px 0 rgba(255, 255, 255, 0.2);
-  display: flex;
-  flex-direction: column;
-  padding: 2px;
-  user-select: none;
-  font-family: 'VT323', monospace;
+  background-repeat: no-repeat;
+  position: relative;
   image-rendering: pixelated;
+  /* Se não tiver skin, pinta de preto pra debug */
+  background-color: #000;
 }
 
-.title-bar {
+/* Titlebar grabbable area */
+.title-bar-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 250px;
   height: 14px;
-  background: linear-gradient(to right, #000080, #1084d0);
-  background-image: var(--skin-titlebar);
-  background-position: 0px 0px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 2px;
   cursor: grab;
-  touch-action: none; /* Previne scroll da página ao arrastar no celular */
 }
 
-.title-bar:active {
+.title-bar-area:active {
   cursor: grabbing;
 }
 
-.title-text {
-  font-family: sans-serif;
-  font-size: 10px;
-  color: white;
-  font-weight: bold;
-}
-
-.window-controls {
-  display: flex;
-  gap: 2px;
-}
-
-.window-controls button {
+/* Window controls (invisible over the main.bmp graphics) */
+.btn-min-area {
+  position: absolute;
+  top: 3px;
+  right: 18px;
   width: 9px;
   height: 9px;
-  background: #ccc;
-  border: 1px outset #fff;
   cursor: pointer;
 }
 
-.main-display {
-  background-color: #000;
-  border: 2px inset #555;
-  margin: 5px 10px;
-  height: 40px;
+.btn-close-area {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 9px;
+  height: 9px;
+  cursor: pointer;
+}
+
+/* Transport Controls positioning */
+.transport-controls {
+  position: absolute;
+  top: 88px;
+  left: 16px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0 5px;
+  gap: 0;
 }
 
-.time-display {
-  color: var(--winamp-text);
-  font-size: 24px;
-  line-height: 1;
-}
-
-.track-info {
-  color: var(--winamp-text);
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.controls {
-  display: flex;
-  gap: 0px;
-  margin-top: auto;
-  margin-bottom: 9px;
-  margin-left: 10px;
-}
-
-.btn {
-  background: #ccc;
+.sprite-btn {
   background-image: var(--skin-cbuttons);
   background-repeat: no-repeat;
-  border: none;
-  cursor: pointer;
-  width: 23px;
   height: 18px;
-  text-indent: -9999px; /* Esconde o texto quando usa imagem */
-  color: transparent;
-}
-
-.btn:active {
-  transform: translateY(1px);
-}
-
-.btn.prev { background-position: 0px 0px; }
-.btn.prev:active { background-position: 0px -18px; }
-
-.btn.play { background-position: -23px 0px; }
-.btn.play:active { background-position: -23px -18px; }
-
-.btn.pause { background-position: -46px 0px; }
-.btn.pause:active { background-position: -46px -18px; }
-
-.btn.stop { background-position: -69px 0px; }
-.btn.stop:active { background-position: -69px -18px; }
-
-.btn.next { width: 22px; background-position: -92px 0px; }
-.btn.next:active { background-position: -92px -18px; }
-
-.url-input-container {
-  padding: 2px 5px;
-}
-
-.url-input-container input {
-  width: 100%;
-  background: #000;
-  border: 1px inset #555;
-  color: #0f0;
-  font-family: 'VT323', monospace;
-  font-size: 14px;
-  padding: 2px;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  padding: 0;
   outline: none;
 }
 
-.url-input-container input::placeholder {
-  color: #050;
-}
+.btn-prev { width: 23px; background-position: 0 0; }
+.btn-prev:active { background-position: 0 -18px; }
 
-.middle-controls {
+.btn-play { width: 23px; background-position: -23px 0; }
+.btn-play:active { background-position: -23px -18px; }
+
+.btn-pause { width: 23px; background-position: -46px 0; }
+.btn-pause:active { background-position: -46px -18px; }
+
+.btn-stop { width: 23px; background-position: -69px 0; }
+.btn-stop:active { background-position: -69px -18px; }
+
+.btn-next { width: 22px; background-position: -92px 0; }
+.btn-next:active { background-position: -92px -18px; }
+
+/* Track Info Text */
+.track-info-overlay {
+  position: absolute;
+  top: 25px;
+  left: 112px;
+  width: 153px;
+  height: 14px;
+  background-color: transparent;
+  overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 10px;
-  margin-bottom: 2px;
 }
 
-.btn-eq {
-  background: #ccc;
-  border: 2px outset #eee;
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 1px 4px;
-  font-family: sans-serif;
-  font-size: 9px;
+.scrolling-text {
+  font-family: 'VT323', monospace;
+  font-size: 13px; /* Smaller font as requested */
+  color: #00ff00;
+  white-space: nowrap;
+  letter-spacing: 0px;
+  text-transform: uppercase;
+  display: inline-block;
+  padding-left: 100%;
+  animation: marquee 8s linear infinite;
 }
 
-.btn-eq:active, .btn-eq.active {
-  border-style: inset;
-  background: #aaa;
-}
-
-.vol-slider {
-  width: 60px;
+@keyframes marquee {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-100%, 0); }
 }
 </style>

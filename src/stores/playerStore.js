@@ -21,8 +21,12 @@ export const usePlayerStore = defineStore('player', () => {
     volume: null
   })
 
-  const isEqVisible = ref(false)
-  const eqBands = ref([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) // 10 bands from -12 to 12 db
+  const isEqVisible = ref(true)
+  const isMilkdropVisible = ref(true)
+  const audioCtx = ref(null)
+  const sourceNode = ref(null)
+  const audioData = ref(new Uint8Array(128))
+  const eqBands = ref([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) // 10 bandas de -12 a 12 db
 
   function play() {
     isPlaying.value = true
@@ -80,9 +84,11 @@ export const usePlayerStore = defineStore('player', () => {
   return { 
     isPlaying, currentTime, volume, skin, 
     playlist, currentIndex, currentTrack,
-    isEqVisible, eqBands,
+    isEqVisible, isMilkdropVisible, audioData, eqBands,
     play, pause, nextTrack, prevTrack, 
     addYoutubeUrl, addLocalAudio, 
-    setSkin
+    setSkin,
+    audioCtx,
+    sourceNode
   }
 })

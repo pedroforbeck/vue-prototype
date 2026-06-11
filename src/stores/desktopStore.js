@@ -26,6 +26,14 @@ export const useDesktopStore = defineStore('desktop', () => {
       isOpen: false,
       isMinimized: false,
       zIndex: 10
+    },
+    {
+      id: 'milkdrop',
+      title: 'Milkdrop',
+      icon: 'https://win98icons.alexmeub.com/icons/png/video_x_generic-0.png',
+      isOpen: false,
+      isMinimized: false,
+      zIndex: 10
     }
   ])
 
@@ -62,6 +70,11 @@ export const useDesktopStore = defineStore('desktop', () => {
       if (!win.isOpen) {
         win.isOpen = true
         focusWindow(id)
+        
+        if (id === 'winamp') {
+          const milk = windows.value.find(w => w.id === 'milkdrop')
+          if (milk) milk.isOpen = true;
+        }
       } else if (win.isMinimized) {
         focusWindow(id)
       } else if (activeWindowId.value === id) {

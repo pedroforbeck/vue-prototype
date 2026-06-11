@@ -4,6 +4,7 @@ import WinampPlayer from './components/player/WinampPlayer.vue';
 import Taskbar from './components/desktop/Taskbar.vue';
 import MyComputerWindow from './components/desktop/MyComputerWindow.vue';
 import MyFilesWindow from './components/desktop/MyFilesWindow.vue';
+import MilkdropWindow from './components/player/MilkdropWindow.vue';
 import { useDesktopStore } from './stores/desktopStore';
 
 const desktopStore = useDesktopStore();
@@ -37,6 +38,7 @@ onMounted(() => {
     <MyComputerWindow />
     <MyFilesWindow />
     <WinampPlayer />
+    <MilkdropWindow />
     
     <!-- Barra de Tarefas -->
     <Taskbar />

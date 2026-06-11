@@ -50,6 +50,9 @@ watch(() => playerStore.eqBands, (newBands) => {
 function initWebAudio() {
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
   sourceNode = audioContext.createMediaElementSource(audioRef.value);
+  playerStore.audioCtx = audioContext;
+  playerStore.sourceNode = sourceNode;
+  
   gainNode = audioContext.createGain();
   gainNode.gain.value = playerStore.volume / 100;
 
@@ -70,7 +73,21 @@ function initWebAudio() {
   });
 
   prevNode.connect(gainNode);
-  gainNode.connect(audioContext.destination);
+  
+  const analyser = audioContext.createAnalyser();
+  analyser.fftSize = 256;
+  gainNode.connect(analyser);
+  analyser.connect(audioContext.destination);
+
+  const updateVisualizer = () => {
+    if (playerStore.isPlaying && isLocalTrack.value) {
+      analyser.getByteFrequencyData(playerStore.audioData);
+    } else {
+      playerStore.audioData.fill(0);
+    }
+    requestAnimationFrame(updateVisualizer);
+  };
+  updateVisualizer();
 }
 
 const onEnded = () => {
