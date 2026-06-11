@@ -5,6 +5,8 @@ export const usePlayerStore = defineStore('player', () => {
   const isPlaying = ref(false)
   const currentTime = ref(0)
   const volume = ref(100)
+  const localAudioEl = ref(null)
+  const initWebAudio = ref(null)
   
   const playlist = ref([
     { type: 'youtube', id: 'jNQXAC9IVRw', title: 'Welcome to WinWeb' }
@@ -21,15 +23,35 @@ export const usePlayerStore = defineStore('player', () => {
     volume: null
   })
 
-  const isEqVisible = ref(false)
-  const eqBands = ref([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) // 10 bands from -12 to 12 db
+  const isEqVisible = ref(true)
+  const isMilkdropVisible = ref(true)
+  const audioCtx = ref(null)
+  const sourceNode = ref(null)
+  const audioData = ref(new Uint8Array(128))
+  const eqBands = ref([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) // 10 bandas de -12 a 12 db
 
   function play() {
     isPlaying.value = true
+    if (initWebAudio.value) {
+      initWebAudio.value();
+    }
+    if (currentTrack.value?.type === 'local' && localAudioEl.value) {
+      // Se a música mudou, atualiza o src de forma síncrona antes de tocar!
+      if (!localAudioEl.value.src.endsWith(currentTrack.value.url)) {
+        localAudioEl.value.src = currentTrack.value.url;
+        localAudioEl.value.load();
+      }
+      localAudioEl.value.play().catch(e => console.error(e));
+    } else if (localAudioEl.value) {
+      localAudioEl.value.pause();
+    }
   }
 
   function pause() {
     isPlaying.value = false
+    if (localAudioEl.value) {
+      localAudioEl.value.pause();
+    }
   }
 
   function nextTrack() {
@@ -64,7 +86,7 @@ export const usePlayerStore = defineStore('player', () => {
   function addLocalAudio(file) {
     if (!file) return;
     const url = URL.createObjectURL(file);
-    playlist.value.push({ type: 'local', url, title: file.name });
+    playlist.value.push({ type: 'local', url, title: file.name, fileRef: file });
     if (!isPlaying.value) {
       currentIndex.value = playlist.value.length - 1;
       play();
@@ -80,9 +102,13 @@ export const usePlayerStore = defineStore('player', () => {
   return { 
     isPlaying, currentTime, volume, skin, 
     playlist, currentIndex, currentTrack,
-    isEqVisible, eqBands,
+    isEqVisible, isMilkdropVisible, audioData, eqBands,
     play, pause, nextTrack, prevTrack, 
     addYoutubeUrl, addLocalAudio, 
-    setSkin
+    setSkin,
+    audioCtx,
+    sourceNode,
+    localAudioEl,
+    initWebAudio
   }
 })

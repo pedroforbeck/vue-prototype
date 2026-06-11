@@ -5,7 +5,7 @@ export const useDesktopStore = defineStore('desktop', () => {
   const windows = ref([
     {
       id: 'winamp',
-      title: 'WinWeb',
+      title: 'VueNamp',
       icon: '/winamp-logo.png',
       isOpen: false,
       isMinimized: false,
@@ -23,6 +23,14 @@ export const useDesktopStore = defineStore('desktop', () => {
       id: 'myfiles',
       title: 'Meus Arquivos',
       icon: 'https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png',
+      isOpen: false,
+      isMinimized: false,
+      zIndex: 10
+    },
+    {
+      id: 'milkdrop',
+      title: 'Milkdrop',
+      icon: '/winamp-logo.png',
       isOpen: false,
       isMinimized: false,
       zIndex: 10
@@ -62,6 +70,11 @@ export const useDesktopStore = defineStore('desktop', () => {
       if (!win.isOpen) {
         win.isOpen = true
         focusWindow(id)
+        
+        if (id === 'winamp') {
+          const milk = windows.value.find(w => w.id === 'milkdrop')
+          if (milk) milk.isOpen = true;
+        }
       } else if (win.isMinimized) {
         focusWindow(id)
       } else if (activeWindowId.value === id) {

@@ -77,7 +77,7 @@ const loop = () => {
     if (props.width) widths.value[i] = getAttr(dist, maxDist, 50, 200)
     else widths.value[i] = 100
 
-    if (props.italic) slants.value[i] = getAttr(dist, maxDist, 0, 15) // or negative
+    if (props.italic) slants.value[i] = getAttr(dist, maxDist, 0, 15) // ou negativo
     else slants.value[i] = 0
   })
 

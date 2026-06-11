@@ -5,3 +5,4 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
 })
+// Restarting server to pick up new npm dependencies

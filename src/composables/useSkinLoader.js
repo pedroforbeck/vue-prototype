@@ -11,7 +11,11 @@ export function useSkinLoader() {
       const files = Object.keys(contents.files);
       
       const getFileBlobUrl = async (filename) => {
-        const match = files.find(f => f.toLowerCase() === filename.toLowerCase());
+        const match = files.find(f => {
+          const lowerF = f.toLowerCase();
+          const lowerName = filename.toLowerCase();
+          return lowerF === lowerName || lowerF.endsWith('/' + lowerName) || lowerF.endsWith('\\\\' + lowerName);
+        });
         if (match) {
           const blob = await contents.files[match].async('blob');
           return URL.createObjectURL(blob);
@@ -25,6 +29,8 @@ export function useSkinLoader() {
       skinData.cbuttons = await getFileBlobUrl('cbuttons.bmp');
       skinData.eqmain = await getFileBlobUrl('eqmain.bmp');
       skinData.volume = await getFileBlobUrl('volume.bmp');
+      skinData.pledit = await getFileBlobUrl('pledit.bmp');
+      skinData.gen = await getFileBlobUrl('gen.bmp');
       
       return skinData;
     } catch (err) {

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
 import { usePlayerStore } from '../../stores/playerStore';
 
 const playerStore = usePlayerStore();
@@ -12,27 +12,14 @@ const eqNodes = [];
 
 const isLocalTrack = computed(() => playerStore.currentTrack?.type === 'local');
 
-watch(() => playerStore.isPlaying, (playing) => {
-  if (!audioRef.value) return;
-  if (playing && isLocalTrack.value) {
-    audioRef.value.play();
-  } else {
-    audioRef.value.pause();
-  }
-});
-
-watch(() => playerStore.currentTrack, (newTrack) => {
-  if (!audioRef.value) return;
-  if (newTrack && newTrack.type === 'local') {
+onMounted(() => {
+  playerStore.localAudioEl = audioRef.value;
+  playerStore.initWebAudio = () => {
     if (!audioContext) initWebAudio();
-    audioRef.value.src = newTrack.url;
-    audioRef.value.load();
-    if (playerStore.isPlaying) {
-      audioRef.value.play();
+    if (audioContext && audioContext.state === 'suspended') {
+      audioContext.resume();
     }
-  } else {
-    audioRef.value.pause();
-  }
+  };
 });
 
 watch(() => playerStore.volume, (newVol) => {
@@ -50,6 +37,9 @@ watch(() => playerStore.eqBands, (newBands) => {
 function initWebAudio() {
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
   sourceNode = audioContext.createMediaElementSource(audioRef.value);
+  playerStore.audioCtx = audioContext;
+  playerStore.sourceNode = sourceNode;
+  
   gainNode = audioContext.createGain();
   gainNode.gain.value = playerStore.volume / 100;
 
@@ -70,7 +60,21 @@ function initWebAudio() {
   });
 
   prevNode.connect(gainNode);
-  gainNode.connect(audioContext.destination);
+  
+  const analyser = audioContext.createAnalyser();
+  analyser.fftSize = 256;
+  gainNode.connect(analyser);
+  analyser.connect(audioContext.destination);
+
+  const updateVisualizer = () => {
+    if (playerStore.isPlaying && isLocalTrack.value) {
+      analyser.getByteFrequencyData(playerStore.audioData);
+    } else {
+      playerStore.audioData.fill(0);
+    }
+    requestAnimationFrame(updateVisualizer);
+  };
+  updateVisualizer();
 }
 
 const onEnded = () => {
@@ -92,9 +96,7 @@ const onPause = () => {
 <template>
   <audio 
     ref="audioRef" 
-    @ended="onEnded"
-    @play="onPlay"
-    @pause="onPause"
-    style="display: none;"
+    @timeupdate="playerStore.currentTime = audioRef.currentTime"
+    @ended="playerStore.nextTrack()"
   ></audio>
 </template>

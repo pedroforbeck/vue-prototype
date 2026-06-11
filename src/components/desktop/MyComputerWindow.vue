@@ -27,11 +27,11 @@ import DraggableWindow from './DraggableWindow.vue';
       
       <div class="disk-drives">
         <div class="disk-drive">
-          <img src="https://win98icons.alexmeub.com/icons/png/drive_disk-4.png" width="32" />
+          <img src="https://win98icons.alexmeub.com/icons/png/computer_explorer-4.png" width="32" />
           <span>Disco Local (C:)</span>
         </div>
         <div class="disk-drive">
-          <img src="https://win98icons.alexmeub.com/icons/png/drive_cd-4.png" width="32" />
+          <img src="https://win98icons.alexmeub.com/icons/png/cd_drive-0.png" width="32" />
           <span>Unidade de CD-RW (D:)</span>
         </div>
       </div>
