@@ -4,6 +4,7 @@ import { useDraggable } from '@vueuse/core';
 import { usePlayerStore } from '../../stores/playerStore';
 import { useSkinLoader } from '../../composables/useSkinLoader';
 import YouTubePlayer from './YouTubePlayer.vue';
+import LocalAudioPlayer from './LocalAudioPlayer.vue';
 
 const playerStore = usePlayerStore();
 const { parseSkin } = useSkinLoader();
@@ -28,13 +29,24 @@ const playerStyle = computed(() => ({
 
 const handleDrop = async (e) => {
   const file = e.dataTransfer.files[0];
-  if (file && (file.name.endsWith('.wsz') || file.name.endsWith('.zip'))) {
+  if (!file) return;
+
+  if (file.name.endsWith('.wsz') || file.name.endsWith('.zip')) {
     const skinData = await parseSkin(file);
     if (skinData) {
       playerStore.setSkin(skinData);
     }
+  } else if (file.name.endsWith('.mp3') || file.type.startsWith('audio/')) {
+    playerStore.addLocalAudio(file);
   }
 };
+
+const trackDisplay = computed(() => {
+  if (!playerStore.currentTrack) return 'WinWeb v1.0';
+  const idx = playerStore.currentIndex + 1;
+  const total = playerStore.playlist.length;
+  return `[${idx}/${total}] ${playerStore.currentTrack.title}`;
+});
 
 const skinVars = computed(() => {
   const s = playerStore.skin;
@@ -51,9 +63,10 @@ const skinVars = computed(() => {
   <div class="draggable-wrapper" ref="playerRef" :style="playerStyle">
     <div class="player-scaler">
       <!-- YouTube Player em cima -->
-    <YouTubePlayer />
+      <YouTubePlayer />
+      <LocalAudioPlayer />
 
-    <!-- Interface Principal do Winamp na parte inferior -->
+      <!-- Interface Principal do Winamp na parte inferior -->
     <div 
       class="winamp-window" 
       :style="skinVars"
@@ -81,16 +94,16 @@ const skinVars = computed(() => {
     <!-- Área Principal do Display -->
     <div class="main-display">
       <div class="time-display">00:00</div>
-      <div class="track-info">1. Welcome to WinWeb</div>
+      <div class="track-info">{{ trackDisplay }}</div>
     </div>
     
     <!-- Área de Controles -->
     <div class="controls">
-      <button class="btn prev">|&lt;</button>
+      <button class="btn prev" @click="playerStore.prevTrack()">|&lt;</button>
       <button class="btn play" @click="playerStore.play()">&gt;</button>
       <button class="btn pause" @click="playerStore.pause()">||</button>
       <button class="btn stop" @click="playerStore.pause()">[]</button>
-      <button class="btn next">&gt;|</button>
+      <button class="btn next" @click="playerStore.nextTrack()">&gt;|</button>
     </div>
       </div>
     </div>
