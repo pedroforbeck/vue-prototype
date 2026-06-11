@@ -1,12 +1,28 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 export const usePlayerStore = defineStore('player', () => {
   const isPlaying = ref(false)
   const currentTime = ref(0)
   const volume = ref(100)
-  // ID de um vídeo normal do YouTube para não dar erro de restrição de domínio
-  const videoId = ref('jNQXAC9IVRw') 
+  
+  const playlist = ref([
+    { type: 'youtube', id: 'jNQXAC9IVRw', title: 'Welcome to WinWeb' }
+  ])
+  const currentIndex = ref(0)
+  
+  const currentTrack = computed(() => playlist.value[currentIndex.value] || null)
+
+  const skin = ref({
+    main: null,
+    titlebar: null,
+    cbuttons: null,
+    eqmain: null,
+    volume: null
+  })
+
+  const isEqVisible = ref(false)
+  const eqBands = ref([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) // 10 bands from -12 to 12 db
 
   function play() {
     isPlaying.value = true
@@ -16,16 +32,57 @@ export const usePlayerStore = defineStore('player', () => {
     isPlaying.value = false
   }
 
-  function loadYoutubeUrl(url) {
-    if (!url) return;
-    // Regex simples para capturar ID de vídeos do youtube
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    const match = url.match(regExp);
-    if (match && match[2].length === 11) {
-      videoId.value = match[2];
-      play(); // Auto-play após carregar
+  function nextTrack() {
+    if (currentIndex.value < playlist.value.length - 1) {
+      currentIndex.value++;
+      play();
+    } else {
+      pause();
     }
   }
 
-  return { isPlaying, currentTime, volume, videoId, play, pause, loadYoutubeUrl }
+  function prevTrack() {
+    if (currentIndex.value > 0) {
+      currentIndex.value--;
+      play();
+    }
+  }
+
+  function addYoutubeUrl(url) {
+    if (!url) return;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    if (match && match[2].length === 11) {
+      playlist.value.push({ type: 'youtube', id: match[2], title: `YouTube Video (${match[2]})` });
+      if (!isPlaying.value) {
+        currentIndex.value = playlist.value.length - 1;
+        play();
+      }
+    }
+  }
+
+  function addLocalAudio(file) {
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    playlist.value.push({ type: 'local', url, title: file.name });
+    if (!isPlaying.value) {
+      currentIndex.value = playlist.value.length - 1;
+      play();
+    }
+  }
+
+  function setSkin(skinData) {
+    if (skinData) {
+      skin.value = { ...skin.value, ...skinData }
+    }
+  }
+
+  return { 
+    isPlaying, currentTime, volume, skin, 
+    playlist, currentIndex, currentTrack,
+    isEqVisible, eqBands,
+    play, pause, nextTrack, prevTrack, 
+    addYoutubeUrl, addLocalAudio, 
+    setSkin
+  }
 })
